@@ -31,8 +31,11 @@ Afin de répondre aux différents problèmes, vous allez avoir besoin de créer 
 
 À vous de jouer ! Écrivez les requêtes MongoDB permettant de résoudre les problèmes posés.
 
+#### Compter le nombre d'appels par catégorie
 ```
-TODO : ajouter les requêtes MongoDB ici
+db.calls.find({ "cat" : "EMS" }).count()
+db.calls.find({ "cat" : "Fire" }).count()
+db.calls.find({ "cat" : "Traffic" }).count()
 ```
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :
