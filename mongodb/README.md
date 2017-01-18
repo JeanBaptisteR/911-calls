@@ -33,9 +33,48 @@ Afin de répondre aux différents problèmes, vous allez avoir besoin de créer 
 
 #### Compter le nombre d'appels par catégorie
 ```
-db.calls.find({ "cat" : "EMS" }).count()
-db.calls.find({ "cat" : "Fire" }).count()
-db.calls.find({ "cat" : "Traffic" }).count()
+db.calls.aggregate([  
+   {  
+      "$group":{  
+         _id:"$cat",
+         count:{  
+            $sum:1
+         }
+      }
+   }
+])
+```
+
+#### Trouver le top 3 des villes avec le plus d'appels pour overdose
+```
+db.calls.aggregate([  
+   {  
+      $match:{  
+         desc:{  
+            $regex:".*OVERDOSE.*"
+         }
+      }
+   },
+   {  
+      "$group":{  
+         _id:{  
+            city:"$city",
+            desc:"$desc"
+         },
+         count:{  
+            $sum:1
+         }
+      }
+   },
+   {  
+      $sort:{  
+         count:-1
+      }
+   },
+   {  
+      $limit:3
+   }
+])
 ```
 
 Vous allez sûrement avoir besoin de vous inspirer des points suivants de la documentation :
