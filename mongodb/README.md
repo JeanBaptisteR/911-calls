@@ -31,6 +31,28 @@ Afin de répondre aux différents problèmes, vous allez avoir besoin de créer 
 
 À vous de jouer ! Écrivez les requêtes MongoDB permettant de résoudre les problèmes posés.
 
+
+#### Compter le nombre d'appels autour de Lansdale dans un rayon de 500 mètres
+```
+db.calls.createIndex( { location : "2dsphere" } )
+```
+```
+db.calls.find({  
+   location:{  
+      $near:{  
+         $geometry:{  
+            type:"Point",
+            coordinates:[  
+               -75.283783,
+               40.241493
+            ]
+         },
+         $maxDistance:500
+      }
+   }
+}).count()
+```
+
 #### Compter le nombre d'appels par catégorie
 ```
 db.calls.aggregate([  
@@ -41,6 +63,37 @@ db.calls.aggregate([
             $sum:1
          }
       }
+   }
+])
+```
+
+#### Trouver les 3 mois ayant comptabilisés le plus d'appels
+```
+db.calls.aggregate([  
+   {  
+      $project:{  
+        year: { $year: "$date" },
+        month: { $month: "$date" }
+      }
+   },
+   {  
+      $group:{  
+        _id:{  
+           year:"$year",
+           month:"$month"
+        },
+         count:{  
+            $sum:1
+         }
+      }
+   },
+   {  
+      $sort:{  
+         count:-1
+      }
+   },
+   {  
+      $limit:3
    }
 ])
 ```
